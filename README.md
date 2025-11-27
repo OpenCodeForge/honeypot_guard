@@ -82,7 +82,7 @@ Create an initializer:
 ```ruby
 # config/initializers/honeypot_guard.rb
 HoneypotGuard.configure do |config|
-  config.min_delay = 3            # seconds
+  config.min_delay = 3 # seconds
   # config.honeypot_field = :website
   # config.timestamp_field = :rendered_at
 end

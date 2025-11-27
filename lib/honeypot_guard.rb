@@ -32,13 +32,20 @@ module HoneypotGuard
   self.timestamp_field = :form_rendered_at
   self.min_delay = 3 # seconds
 
-  # Optional configuration from Rails initializer
+  # Configures HoneypotGuard.
   #
-  # HoneypotGuard.configure do |config|
-  #   config.min_delay = 5
-  #   config.honeypot_field = :website
-  #   config.timestamp_field = :rendered_at
-  # end
+  # This method allows you to customize the names of the
+  # honeypot and timestamp fields, as well as the minimum
+  # submission delay.
+  #
+  # Example:
+  #
+  #   # config/initializers/honeypot_guard.rb
+  #   HoneypotGuard.configure do |config|
+  #     config.min_delay = 3
+  #     # config.honeypot_field = :website
+  #     # config.timestamp_field = :rendered_at
+  #   end
   #
   def self.configure
     yield self
