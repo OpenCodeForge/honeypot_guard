@@ -1,17 +1,41 @@
 # frozen_string_literal: true
 
 module HoneypotGuard
+  # Controller helpers used to filter out simple spam submissions.
+  #
+  # This module is intended to be included in Rails controllers
+  # handling form submissions, and works in combination with the
+  # +spam_trap_fields+ view helper.
+  #
   module Controller
     extend ActiveSupport::Concern
 
     private
 
-    # Usage:
+    # Filters out obvious spam submissions based on:
+    #
+    # - a honeypot field that must remain empty
+    # - a minimum delay between form render and submission
+    #
+    # Typical usage in a controller:
     #
     #   class ContactMessagesController < ApplicationController
     #     include HoneypotGuard::Controller
+    #
     #     before_action :filter_spam, only: :create
     #   end
+    #
+    # Combined with the ViewHelpers:
+    #
+    #   <%= form_with model: @contact_message do |f| %>
+    #     <%= spam_trap_fields %>
+    #     ...
+    #   <% end %>
+    #
+    # Behaviour:
+    # - reads the configured honeypot and timestamp fields from +params+
+    # - if spam is detected, logs a message and responds with <tt>422 Unprocessable Entity</tt>
+    # - the controller action is not executed in that case
     #
     def filter_spam
       hp_name = HoneypotGuard.honeypot_field.to_s

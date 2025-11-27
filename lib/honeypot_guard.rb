@@ -5,6 +5,16 @@ require "honeypot_guard/controller"
 require "honeypot_guard/view_helpers"
 require "honeypot_guard/railtie" if defined?(Rails::Railtie)
 
+# Minimal spam protection for Rails forms.
+#
+# Public API:
+#
+# Controller:
+# - +filter_spam+: before_action to block obvious spam submissions
+#
+# Views:
+# - +spam_trap_fields+: injects honeypot and timestamp fields into forms
+#
 module HoneypotGuard
   class << self
     # Name of the honeypot field in params / forms
