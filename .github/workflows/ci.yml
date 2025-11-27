@@ -10,8 +10,13 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: false
       matrix:
-        ruby-version: [ '3.0' ]
+        ruby-version: ['3.2']
+        rails-version: ['7.2', '8.0', '8.1']
+
+    env:
+      BUNDLE_GEMFILE: gemfiles/rails_${{ matrix.rails-version }}.gemfile
 
     steps:
       - name: Checkout repository
@@ -23,5 +28,8 @@ jobs:
           ruby-version: ${{ matrix.ruby-version }}
           bundler-cache: true
 
-      - name: Run tests
+      - name: Install dependencies
+        run: bundle install --jobs 4 --retry 3
+
+      - name: Run specs
         run: bundle exec rspec
