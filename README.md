@@ -1,4 +1,4 @@
-# 🛡️ HoneypotGuard
+# 🛡️ HoneypotGuard [![CI](https://github.com/OpenCodeForge/honeypot_guard/actions/workflows/ci.yml/badge.svg)](https://github.com/OpenCodeForge/honeypot_guard/actions/workflows/ci.yml)
 
 HoneypotGuard is a **minimal Rails gem** that protects web forms from basic spam using:
 
