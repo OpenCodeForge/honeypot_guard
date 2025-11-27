@@ -1,39 +1,118 @@
-# HoneypotGuard
+# 🛡️ HoneypotGuard
 
-TODO: Delete this and the text below, and describe your gem
+HoneypotGuard is a **minimal Rails gem** that protects web forms from basic spam using:
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/honeypot_guard`. To experiment with that code, run `bin/console` for an interactive prompt.
+- 🍯 an invisible **honeypot field**
+- ⏱️ a simple **minimum submission delay**
 
-## Installation
+It works **at the controller level** (no model validations) and immediately rejects spam requests with **`422 Unprocessable Entity`**.
 
-TODO: Replace `UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG` with your gem name right after releasing it to RubyGems.org. Please do not do it earlier due to security reasons. Alternatively, replace this section with instructions to install your gem from git if you don't plan to release to RubyGems.org.
+Perfect for ✉️ **contact forms**, 💬 feedback forms, and other **non-persisted submissions**.
 
-Install the gem and add to the application's Gemfile by executing:
+---
 
-```bash
-bundle add UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+## 📦 Installation
+
+Add the gem to your Gemfile:
+
+```ruby
+gem "honeypot_guard"
 ```
 
-If bundler is not being used to manage dependencies, install the gem by executing:
+Then run:
 
 ```bash
-gem install UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+bundle install
 ```
 
-## Usage
+---
 
-TODO: Write usage instructions here
+## 🚀 Usage
 
-## Development
+### 1️⃣ Add spam trap fields to your form
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+Inside any `form_with` or `form_for` block:
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+```erb
+<%= form_with url: contact_messages_path do |f| %>
+  <%= spam_trap_fields %>
 
-## Contributing
+  <%= f.text_field :name %>
+  <%= f.email_field :email %>
+  <%= f.text_area :message %>
+  <%= f.submit "Send" %>
+<% end %>
+```
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/OpenCodeForge/honeypot_guard.
+This injects automatically:
+- 🕳️ an invisible honeypot input
+- 🧭 a hidden timestamp input
 
-## License
+---
 
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+### 2️⃣ Enable spam filtering in the controller
+
+Include the controller concern and add the `before_action`:
+
+```ruby
+class ContactMessagesController < ApplicationController
+  include HoneypotGuard::Controller
+
+  before_action :filter_spam, only: :create
+
+  def create
+    # normal processing
+    redirect_to root_path, notice: "Message sent"
+  end
+end
+```
+
+If spam is detected, the request is immediately stopped with:
+
+```http
+422 Unprocessable Entity
+```
+
+---
+
+## ⚙️ Configuration (Optional)
+
+Create an initializer:
+
+```ruby
+# config/initializers/honeypot_guard.rb
+HoneypotGuard.configure do |config|
+  config.min_delay = 3            # seconds
+  # config.honeypot_field = :website
+  # config.timestamp_field = :rendered_at
+end
+```
+
+---
+
+## 🧠 How It Works
+
+A request is considered spam if **any** of the following is true:
+
+1. 🚨 The honeypot field is filled
+2. ⚡ The form is submitted faster than the configured minimum delay
+
+✅ No JavaScript  
+✅ No model validation  
+✅ No database access
+
+---
+
+## ⚠️ Limitations
+
+HoneypotGuard is intentionally simple:
+
+- ❌ Not effective against advanced bots or direct HTTP submissions
+- ❌ Does not replace rate limiting or firewalls
+- ✅ Best used alongside tools like **Rack::Attack**
+
+---
+
+## 📄 License
+
+MIT License
