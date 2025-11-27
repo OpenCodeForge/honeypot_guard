@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "action_view"
+require "uri"
 
 module HoneypotGuard
   # View helpers used to inject spam trap fields into Rails forms.
