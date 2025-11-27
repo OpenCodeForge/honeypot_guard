@@ -25,4 +25,9 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = ">= 3.0"
   spec.add_dependency "rails", ">= 7.2", "< 9.0"
   spec.add_development_dependency "rspec", "~> 3.12"
+
+  spec.metadata = {
+    "source_code_uri" => "https://github.com/OpenCodeForge/honeypot_guard",
+    "changelog_uri"   => "https://github.com/OpenCodeForge/honeypot_guard/blob/main/CHANGELOG.md"
+  }
 end
