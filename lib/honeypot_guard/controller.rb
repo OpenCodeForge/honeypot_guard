@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "active_support/concern"
+
 module HoneypotGuard
   # Controller helpers used to filter out simple spam submissions.
   #
